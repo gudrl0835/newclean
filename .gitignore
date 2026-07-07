@@ -1,0 +1,38 @@
+# ===== 프론트엔드 =====
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+
+# ===== 백엔드 =====
+backend/backend/build/
+backend/backend/.gradle/
+backend/backend/out/
+backend/backend/bin/
+*.class
+*.jar
+*.war
+
+# 환경변수 (API 키 등 민감 정보)
+*.env
+application-prod.properties
+application-secret.properties
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 로그 =====
+*.log
+logs/
+
+# ===== Claude 임시 파일 =====
+.claude/changed_files.txt
