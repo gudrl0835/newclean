@@ -1,5 +1,6 @@
 package com.cleanmatching.backend.domain.request.service;
 
+import com.cleanmatching.backend.domain.chat.service.ChatService;
 import com.cleanmatching.backend.domain.company.entity.Company;
 import com.cleanmatching.backend.domain.company.repository.CompanyRepository;
 import com.cleanmatching.backend.domain.request.dto.RequestDto;
@@ -29,6 +30,7 @@ public class RequestService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final ReviewRepository reviewRepository;
+    private final ChatService chatService;
 
     /* ── 의뢰 생성 (고객) ── */
     @Transactional
@@ -138,6 +140,11 @@ public class RequestService {
         int n2 = ThreadLocalRandom.current().nextInt(1000, 9999);
         request.setSafeNumber("070-" + n1 + "-" + n2);
         request.setStatus(CleanRequest.Status.ACCEPTED);
+
+        // 채팅방 자동 생성
+        User customer = request.getCustomer();
+        Company company = request.getCompany();
+        chatService.getOrCreateRoom(customer, company);
     }
 
     /* ── 의뢰 취소 (고객) ── */
