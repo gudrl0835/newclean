@@ -6,7 +6,8 @@
       "Edit",
       "Bash(*)",
       "PowerShell(*)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('settings.local.json: valid JSON'\\)\")"
     ],
     "defaultMode": "acceptEdits"
   },
@@ -16,8 +17,8 @@
         "hooks": [
           {
             "type": "command",
-            "shell": "powershell",
             "command": "cd \"C:\\Users\\user\\OneDrive\\바탕 화면\\project\\newcelan\"; git pull --rebase 2>&1 | Out-Null; exit 0",
+            "shell": "powershell",
             "timeout": 30,
             "statusMessage": "GitHub에서 최신 코드 가져오는 중..."
           }
@@ -30,15 +31,15 @@
         "hooks": [
           {
             "type": "command",
-            "shell": "powershell",
             "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\track_changed_file.ps1\"",
+            "shell": "powershell",
             "timeout": 10,
             "statusMessage": "코드 변경 기록 중..."
           },
           {
             "type": "command",
-            "shell": "powershell",
             "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\auto_push.ps1\"",
+            "shell": "powershell",
             "timeout": 30,
             "statusMessage": "변경량 확인 중... (30% 초과 시 GitHub 자동 업로드)"
           }
@@ -56,8 +57,8 @@
           },
           {
             "type": "command",
-            "shell": "powershell",
             "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\auto_commit_push.ps1\"",
+            "shell": "powershell",
             "timeout": 30,
             "statusMessage": "GitHub에 자동 업로드 중..."
           }
