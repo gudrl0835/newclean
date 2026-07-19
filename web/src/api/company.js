@@ -14,4 +14,10 @@ export const companyApi = {
 
   // 업체 상세
   getCompany: (id) => api.get(`/api/companies/${id}`),
+
+  // 내 업체 프로필 조회 (수정 화면용)
+  getMyProfile: () => api.get('/api/companies/me'),
+
+  // 내 업체 프로필 수정
+  updateProfile: (data) => api.put('/api/companies/me', data),
 };

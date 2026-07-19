@@ -15,4 +15,10 @@ export const authApi = {
 
   // 이메일 중복 확인
   checkEmail: (email) => api.get('/api/auth/check-email', { params: { email } }),
+
+  // 내 정보 수정 (이름/전화번호)
+  updateMe: (data) => api.patch('/api/auth/me', data),
+
+  // 비밀번호 변경
+  changePassword: (data) => api.patch('/api/auth/me/password', data),
 };

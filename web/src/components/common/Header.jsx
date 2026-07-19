@@ -37,10 +37,12 @@ export default function Header() {
           {isLoggedIn && userRole === 'customer' && <>
             <Link to="/my-requests" className={`transition-colors ${isActive('/my-requests')}`}>내 의뢰</Link>
             <Link to="/chats" className={`transition-colors ${isActive('/chats')}`}>채팅</Link>
+            <Link to="/my-profile" className={`transition-colors ${isActive('/my-profile')}`}>내 정보</Link>
           </>}
           {isLoggedIn && userRole === 'company' && <>
             <Link to="/dashboard" className={`transition-colors ${isActive('/dashboard')}`}>대시보드</Link>
             <Link to="/chats" className={`transition-colors ${isActive('/chats')}`}>채팅</Link>
+            <Link to="/company/profile" className={`transition-colors ${isActive('/company/profile')}`}>프로필 수정</Link>
           </>}
         </nav>
 
@@ -99,6 +101,8 @@ export default function Header() {
           {isLoggedIn && userRole === 'customer' && <Link to="/my-requests" className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50" onClick={() => setMenuOpen(false)}>📋 내 의뢰</Link>}
           {isLoggedIn && <Link to="/chats" className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50" onClick={() => setMenuOpen(false)}>💬 채팅</Link>}
           {isLoggedIn && userRole === 'company' && <Link to="/dashboard" className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50" onClick={() => setMenuOpen(false)}>📊 대시보드</Link>}
+          {isLoggedIn && userRole === 'customer' && <Link to="/my-profile" className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50" onClick={() => setMenuOpen(false)}>👤 내 정보</Link>}
+          {isLoggedIn && userRole === 'company' && <Link to="/company/profile" className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50" onClick={() => setMenuOpen(false)}>👤 프로필 수정</Link>}
           <div className="border-t border-gray-100 pt-2 mt-1 flex flex-col gap-2">
             {isLoggedIn
               ? <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-gray-700 py-2.5 px-3 rounded-xl hover:bg-gray-50 text-left">🚪 로그아웃</button>

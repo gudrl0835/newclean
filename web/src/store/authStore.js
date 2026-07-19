@@ -26,6 +26,11 @@ const useAuthStore = create(
         });
       },
 
+      // 내 정보(이름/전화번호) 갱신 - 서버 응답을 그대로 반영
+      updateUser: (partial) => {
+        set((state) => ({ user: { ...state.user, ...partial } }));
+      },
+
       // 로그아웃
       logout: () => {
         localStorage.removeItem('accessToken');

@@ -18,7 +18,9 @@ import CompanySignup from './pages/auth/CompanySignup';
 
 import Dashboard from './pages/company/Dashboard';
 import QuotationForm from './pages/company/QuotationForm';
+import CompanyProfileEdit from './pages/company/ProfileEdit';
 import MyRequests from './pages/customer/MyRequests';
+import CustomerProfileEdit from './pages/customer/ProfileEdit';
 
 import ChatbotWidget from './components/common/ChatbotWidget';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -55,6 +57,9 @@ function Layout() {
           <Route path="/review/:requestId" element={
             <PrivateRoute role="customer"><ReviewForm /></PrivateRoute>
           } />
+          <Route path="/my-profile" element={
+            <PrivateRoute role="customer"><CustomerProfileEdit /></PrivateRoute>
+          } />
 
           {/* 업체 전용 */}
           <Route path="/dashboard" element={
@@ -62,6 +67,9 @@ function Layout() {
           } />
           <Route path="/quotation/:requestId" element={
             <PrivateRoute role="company"><QuotationForm /></PrivateRoute>
+          } />
+          <Route path="/company/profile" element={
+            <PrivateRoute role="company"><CompanyProfileEdit /></PrivateRoute>
           } />
 
           {/* 공통 로그인 필요 */}
