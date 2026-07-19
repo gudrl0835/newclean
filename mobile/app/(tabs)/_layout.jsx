@@ -1,9 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import useTabBarStyle from '../../src/hooks/useTabBarStyle';
 
 export default function TabsLayout() {
+  const tabBarStyle = useTabBarStyle();
+
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: '#1E90FF' }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: '#1E90FF', tabBarStyle }}>
       <Tabs.Screen
         name="home"
         options={{

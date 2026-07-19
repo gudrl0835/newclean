@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { companyApi } from '../../src/api/company';
@@ -18,6 +19,7 @@ function Chip({ label, selected, onPress }) {
 }
 
 export default function Home() {
+  const insets = useSafeAreaInsets();
   const [sido, setSido] = useState('');
   const [sigungu, setSigungu] = useState('');
   const [topCompanies, setTopCompanies] = useState([]);
@@ -52,7 +54,7 @@ export default function Home() {
 
   return (
     <View className="flex-1 bg-gray-50">
-    <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+    <ScrollView contentContainerStyle={{ padding: 16, paddingTop: insets.top + 16, paddingBottom: 40 }}>
       <View className="items-center py-6">
         <Text className="text-blue-500 font-semibold text-sm mb-2">투명한 청소 서비스 플랫폼</Text>
         <Text className="text-2xl font-bold text-gray-900 text-center leading-snug">

@@ -1,12 +1,14 @@
 import { Tabs } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import useRequireRole from '../../src/hooks/useRequireRole';
+import useTabBarStyle from '../../src/hooks/useTabBarStyle';
 
 export default function CompanyLayout() {
   useRequireRole('COMPANY');
+  const tabBarStyle = useTabBarStyle();
 
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: '#1E90FF' }}>
+    <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: '#1E90FF', tabBarStyle }}>
       <Tabs.Screen
         name="dashboard"
         options={{
