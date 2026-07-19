@@ -48,20 +48,28 @@ public class DataInitializer implements ApplicationRunner {
         log.info("✅ 관리자 계정 생성: admin@cleanmatching.com / admin1234!");
     }
 
-    // 테스트 고객 계정
+    // 테스트 고객 계정 3개
     private void createTestCustomer() {
-        if (userRepository.existsByEmail("customer1@test.com")) return;
+        List<CustomerData> customers = List.of(
+            new CustomerData("customer1@test.com", "홍길동", "010-9999-8888"),
+            new CustomerData("customer2@test.com", "김철수", "010-8888-7777"),
+            new CustomerData("customer3@test.com", "이영희", "010-7777-6666")
+        );
 
-        User customer = User.builder()
-                .email("customer1@test.com")
-                .password(passwordEncoder.encode("Test1234!"))
-                .name("홍길동")
-                .phone("010-9999-8888")
-                .role(User.Role.CUSTOMER)
-                .emailVerified(true)
-                .build();
-        userRepository.save(customer);
-        log.info("✅ 테스트 고객 생성: customer1@test.com / Test1234!");
+        for (CustomerData data : customers) {
+            if (userRepository.existsByEmail(data.email)) continue;
+
+            User customer = User.builder()
+                    .email(data.email)
+                    .password(passwordEncoder.encode("Test1234!"))
+                    .name(data.name)
+                    .phone(data.phone)
+                    .role(User.Role.CUSTOMER)
+                    .emailVerified(true)
+                    .build();
+            userRepository.save(customer);
+            log.info("✅ 테스트 고객 생성: {} / Test1234!", data.email);
+        }
     }
 
     // 테스트 업체 계정 5개
@@ -90,7 +98,12 @@ public class DataInitializer implements ApplicationRunner {
             new CompanyData("clean5@test.com", "정홈케어", "홈케어청소",
                 "010-5555-6666", "인천", "부평구",
                 "인천 지역 최고의 가정청소 전문 업체입니다. 에어컨 청소 서비스도 함께 제공합니다.",
-                25000, 37.5078, 126.7218, "567-89-01234")
+                25000, 37.5078, 126.7218, "567-89-01234"),
+
+            new CompanyData("clean6@test.com", "강거절", "거절된청소",
+                "010-6666-7777", "서울", "마포구",
+                "사업자등록증 확인이 되지 않아 거절된 테스트 업체입니다.",
+                35000, 37.5663, 126.9019, "000-00-00000")
         );
 
         for (CompanyData data : companies) {
