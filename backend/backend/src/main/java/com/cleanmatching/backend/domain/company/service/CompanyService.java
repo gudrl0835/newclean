@@ -59,6 +59,17 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
+    // 활동 지역 수정 (업체 본인)
+    @Transactional
+    public void updateRegion(Long userId, CompanyDto.UpdateRegionRequest request) {
+        Company company = companyRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("업체 정보를 찾을 수 없습니다."));
+
+        company.setSido(request.getSido());
+        company.setSigungu(request.getSigungu());
+        company.setAddressDetail(request.getAddressDetail());
+    }
+
     private List<CompanyDto.Summary> sortAndMap(List<Company> companies, String sort) {
         Comparator<Company> comparator = switch (sort != null ? sort : "rating") {
             case "review" -> Comparator.comparingInt(Company::getReviewCount).reversed();

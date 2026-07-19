@@ -2,8 +2,10 @@ package com.cleanmatching.backend.domain.company.controller;
 
 import com.cleanmatching.backend.domain.company.dto.CompanyDto;
 import com.cleanmatching.backend.domain.company.service.CompanyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,5 +46,15 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDto.Detail> getCompany(@PathVariable Long id) {
         return ResponseEntity.ok(companyService.getCompany(id));
+    }
+
+    // 활동 지역 수정 (업체 본인)
+    @PatchMapping("/region")
+    public ResponseEntity<String> updateRegion(
+            @Valid @RequestBody CompanyDto.UpdateRegionRequest request,
+            Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        companyService.updateRegion(userId, request);
+        return ResponseEntity.ok("지역 정보가 수정되었습니다.");
     }
 }

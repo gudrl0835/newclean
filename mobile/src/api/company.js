@@ -14,4 +14,7 @@ export const companyApi = {
 
   // 업체 상세
   getCompany: (id) => api.get(`/api/companies/${id}`),
+
+  // 활동 지역 수정 (업체 본인)
+  updateRegion: (data) => api.patch('/api/companies/region', data),
 };

@@ -37,6 +37,7 @@ export default function RootLayout() {
           <Stack.Screen name="chats/index" options={{ headerShown: true, title: '채팅' }} />
           <Stack.Screen name="chats/[roomId]" options={{ headerShown: true, title: '채팅방' }} />
           <Stack.Screen name="chatbot" options={{ presentation: 'modal', headerShown: true, title: '클린매칭 AI 지원' }} />
+          <Stack.Screen name="settings" options={{ headerShown: true, title: '개인설정' }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { authApi } from '../../src/api/auth';
+import { SIDO_LIST } from '../../src/constants/regions';
 
 const STEPS = ['기본 정보', '위치 정보', '서비스 등록', '완료'];
-const SIDO_LIST = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
 const SERVICE_TAGS = ['가정 기본청소', '입주청소', '이사청소', '사무실청소', '특수청소', '에어컨청소', '욕실청소', '주방청소'];
 
 function formatPhone(value) {

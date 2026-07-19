@@ -41,7 +41,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // 인증 없이 접근 가능
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/signup/**", "/api/auth/login", "/api/auth/check-email").permitAll()
                 .requestMatchers("/api/chatbot/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/companies/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .requestMatchers("/ws/**").permitAll()
                 // 관리자 전용
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // 업체 전용
+                .requestMatchers(HttpMethod.PATCH, "/api/companies/region").hasRole("COMPANY")
                 // 나머지는 인증 필요
                 .anyRequest().authenticated()
             )

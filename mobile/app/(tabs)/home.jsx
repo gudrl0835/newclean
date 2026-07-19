@@ -4,15 +4,7 @@ import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { companyApi } from '../../src/api/company';
 import CompanyCard from '../../src/components/CompanyCard';
-
-const SIDO_LIST = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
-
-const SIGUNGU_MAP = {
-  '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
-  '경기': ['수원시', '성남시', '고양시', '용인시', '부천시', '안산시', '안양시', '남양주시', '화성시', '평택시'],
-  '인천': ['계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '중구'],
-  '부산': ['강서구', '금정구', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
-};
+import { SIDO_LIST, SIGUNGU_MAP } from '../../src/constants/regions';
 
 function Chip({ label, selected, onPress }) {
   return (

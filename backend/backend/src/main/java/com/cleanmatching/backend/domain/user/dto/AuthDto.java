@@ -91,4 +91,38 @@ public class AuthDto {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SettingsResponse {
+        private Long id;
+        private String email;
+        private String name;
+        private String phone;
+        private String role;
+        private String sido;
+        private String sigungu;
+        private String addressDetail;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateSettingsRequest {
+        @NotBlank
+        private String name;
+        private String phone;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChangePasswordRequest {
+        @NotBlank
+        private String currentPassword;
+        @NotBlank
+        private String newPassword;
+    }
 }

@@ -26,6 +26,11 @@ export default function ProfileScreen() {
         </View>
       </View>
 
+      <Pressable onPress={() => router.push('/settings')} className="flex-row items-center gap-2 card mb-3">
+        <Feather name="settings" size={18} color="#6b7280" />
+        <Text className="text-gray-700 font-semibold">개인설정</Text>
+      </Pressable>
+
       <Pressable onPress={handleLogout} className="flex-row items-center gap-2 card">
         <Feather name="log-out" size={18} color="#ef4444" />
         <Text className="text-red-500 font-semibold">로그아웃</Text>

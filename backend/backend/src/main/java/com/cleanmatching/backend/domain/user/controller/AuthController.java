@@ -50,4 +50,30 @@ public class AuthController {
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         return ResponseEntity.ok(authService.isEmailAvailable(email));
     }
+
+    // 개인설정 조회
+    @GetMapping("/settings")
+    public ResponseEntity<AuthDto.SettingsResponse> getSettings(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(authService.getSettings(userId));
+    }
+
+    // 개인설정 수정 (이름/전화번호)
+    @PatchMapping("/settings")
+    public ResponseEntity<AuthDto.SettingsResponse> updateSettings(
+            @Valid @RequestBody AuthDto.UpdateSettingsRequest request,
+            Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(authService.updateSettings(userId, request));
+    }
+
+    // 비밀번호 변경
+    @PatchMapping("/password")
+    public ResponseEntity<String> changePassword(
+            @Valid @RequestBody AuthDto.ChangePasswordRequest request,
+            Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        authService.changePassword(userId, request);
+        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    }
 }

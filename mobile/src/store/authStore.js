@@ -28,6 +28,8 @@ const useAuthStore = create(
         await SecureStore.deleteItemAsync('refreshToken');
         set({ user: null, isLoggedIn: false });
       },
+
+      updateUser: (partial) => set((state) => ({ user: { ...state.user, ...partial } })),
     }),
     {
       name: 'auth-storage',
