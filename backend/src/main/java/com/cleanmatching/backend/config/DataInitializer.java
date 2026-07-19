@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+// 이메일은 users 테이블에서 UNIQUE라 existsByEmail 체크로 중복 생성은 막힌다.
+// 단, 나중에 app/ 쪽 코드가 자체 시드 데이터를 가져올 때 같은 이메일을 다른 내용으로 쓰면
+// 여기서 먼저 만든 계정이 그대로 남고 app 쪽 데이터는 조용히 무시되니, 병합 전에 이메일 목록을 대조할 것.
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -119,8 +122,13 @@ public class DataInitializer implements ApplicationRunner {
                     .build();
             userRepository.save(user);
 
-            // clean1~3은 APPROVED (홈/검색 테스트용), clean4~5는 PENDING
+            // clean1~3은 APPROVED (홈/검색 테스트용), clean4~5는 PENDING, clean6은 REJECTED
             boolean isFirst = data.email.equals("clean1@test.com") || data.email.equals("clean2@test.com") || data.email.equals("clean3@test.com");
+            boolean isRejected = data.email.equals("clean6@test.com");
+            Company.ApprovalStatus approvalStatus = isRejected
+                    ? Company.ApprovalStatus.REJECTED
+                    : (isFirst ? Company.ApprovalStatus.APPROVED : Company.ApprovalStatus.PENDING);
+
             Company company = Company.builder()
                     .user(user)
                     .companyName(data.companyName)
@@ -132,7 +140,8 @@ public class DataInitializer implements ApplicationRunner {
                     .basePrice(data.basePrice)
                     .serviceRadius(15)
                     .businessNo(data.businessNo)
-                    .approvalStatus(isFirst ? Company.ApprovalStatus.APPROVED : Company.ApprovalStatus.PENDING)
+                    .approvalStatus(approvalStatus)
+                    .rejectReason(isRejected ? "사업자등록증 확인 불가" : null)
                     .verified(isFirst)
                     .ratingSum(0.0)
                     .reviewCount(0)
@@ -152,4 +161,6 @@ public class DataInitializer implements ApplicationRunner {
         String description, int basePrice,
         double lat, double lng, String businessNo
     ) {}
+
+    record CustomerData(String email, String name, String phone) {}
 }

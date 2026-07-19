@@ -213,11 +213,17 @@ PENDING → APPROVED (관리자 승인) → 검색 노출
 |------|--------|----------|
 | 관리자 | admin@cleanmatching.com | admin1234! |
 | 고객 | customer1@test.com | Test1234! |
+| 고객 | customer2@test.com | Test1234! |
+| 고객 | customer3@test.com | Test1234! |
 | 업체(승인됨) | clean1@test.com | Clean1234! |
 | 업체(승인됨) | clean2@test.com | Clean1234! |
 | 업체(승인됨) | clean3@test.com | Clean1234! |
 | 업체(대기중) | clean4@test.com | Clean1234! |
 | 업체(대기중) | clean5@test.com | Clean1234! |
+| 업체(거절됨) | clean6@test.com | Clean1234! |
+
+> ⚠️ `app/` 코드를 나중에 합칠 때 이 이메일들과 겹치는 시드 데이터가 있는지 먼저 확인할 것.
+> `DataInitializer`는 `existsByEmail`로 중복 생성을 막지만, 같은 이메일에 다른 내용이 들어오면 에러 없이 조용히 무시되고 먼저 생성된 쪽이 남는다. (`backend/.../config/DataInitializer.java` 상단 주석 참고)
 
 ---
 
