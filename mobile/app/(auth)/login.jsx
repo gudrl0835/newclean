@@ -80,15 +80,8 @@ export default function Login() {
 
       <View className="mt-6 flex-row justify-center">
         <Text className="text-gray-500 text-sm">계정이 없으신가요? </Text>
-        <Link href="/(auth)/signup" className="text-blue-500 font-semibold text-sm">
+        <Link href="/(auth)/signup-type" className="text-blue-500 font-semibold text-sm">
           회원가입
-        </Link>
-      </View>
-
-      <View className="mt-4 card bg-blue-50 border-blue-100">
-        <Text className="text-xs text-center text-blue-600 font-medium mb-2">청소 업체이신가요?</Text>
-        <Link href="/(auth)/signup-company" className="text-center text-sm font-semibold text-blue-500">
-          업체 전용 가입하기 →
         </Link>
       </View>
     </ScrollView>
