@@ -5,18 +5,11 @@ import { companyApi } from '../src/api/company';
 import useAuthStore from '../src/store/authStore';
 import { SIDO_LIST, SIGUNGU_MAP } from '../src/constants/regions';
 
-function formatPhone(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
-}
-
 export default function Settings() {
-  const updateUser = useAuthStore((s) => s.updateUser);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [role, setRole] = useState(null);
+  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [nickname, setNickname] = useState('');
@@ -39,6 +32,7 @@ export default function Settings() {
       .then(async (res) => {
         const me = res.data;
         setRole(me.role);
+        setEmail(me.email || '');
         setName(me.name || '');
         setPhone(me.phone || '');
         setNickname(me.nickname || '');
@@ -56,11 +50,10 @@ export default function Settings() {
   }, []);
 
   const handleSave = async () => {
-    if (!name.trim()) return Alert.alert('이름을 입력해주세요.');
     if (role === 'CUSTOMER' && !nickname.trim()) return Alert.alert('닉네임을 입력해주세요.');
     setSaving(true);
     try {
-      const meRes = await authApi.updateMe({ name, phone, nickname });
+      await authApi.updateMe({ nickname });
       if (role === 'COMPANY' && companyProfile) {
         if (!sido) return Alert.alert('시/도를 선택해주세요.');
         if (!sigungu.trim()) return Alert.alert('시/군/구를 입력해주세요.');
@@ -76,7 +69,6 @@ export default function Settings() {
           addressDetail,
         });
       }
-      updateUser({ name: meRes.data.name, phone: meRes.data.phone });
       Alert.alert('저장되었습니다.');
     } catch (err) {
       Alert.alert(err.response?.data?.message || '저장에 실패했어요.');
@@ -116,8 +108,21 @@ export default function Settings() {
     <ScrollView className="flex-1 bg-white" contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
       <Text className="text-lg font-bold text-gray-900 mb-4">기본 정보</Text>
 
-      <Text className="text-sm font-semibold text-gray-700 mb-2">이름</Text>
-      <TextInput value={name} onChangeText={setName} placeholder="이름" className="input-base mb-4" />
+      {/* 이메일/이름/전화번호는 안전번호·본인확인과 연결돼 있어 가입 후 수정 불가 (읽기 전용) */}
+      <Text className="text-xs text-gray-400 mb-1 ml-1">이메일</Text>
+      <View className="input-base mb-3 bg-gray-50">
+        <Text className="text-gray-400">{email}</Text>
+      </View>
+
+      <Text className="text-xs text-gray-400 mb-1 ml-1">이름</Text>
+      <View className="input-base mb-3 bg-gray-50">
+        <Text className="text-gray-400">{name}</Text>
+      </View>
+
+      <Text className="text-xs text-gray-400 mb-1 ml-1">전화번호</Text>
+      <View className="input-base mb-4 bg-gray-50">
+        <Text className="text-gray-400">{phone}</Text>
+      </View>
 
       {role === 'CUSTOMER' && (
         <>
@@ -126,15 +131,6 @@ export default function Settings() {
           <TextInput value={nickname} onChangeText={setNickname} placeholder="닉네임" className="input-base mb-4" />
         </>
       )}
-
-      <Text className="text-sm font-semibold text-gray-700 mb-2">전화번호</Text>
-      <TextInput
-        value={phone}
-        onChangeText={(v) => setPhone(formatPhone(v))}
-        placeholder="010-0000-0000"
-        keyboardType="phone-pad"
-        className="input-base mb-4"
-      />
 
       {role === 'COMPANY' && (
         <View className="mb-2">

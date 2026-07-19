@@ -16,7 +16,7 @@ export const authApi = {
   // 이메일 중복 확인
   checkEmail: (email) => api.get('/api/auth/check-email', { params: { email } }),
 
-  // 내 정보 수정 (이름/전화번호/닉네임)
+  // 내 정보 수정 (닉네임 - 이름/전화번호는 본인확인 정보라 가입 후 변경 불가)
   updateMe: (data) => api.patch('/api/auth/me', data),
 
   // 비밀번호 변경
