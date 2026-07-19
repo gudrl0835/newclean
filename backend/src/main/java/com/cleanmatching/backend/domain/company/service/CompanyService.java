@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +58,32 @@ public class CompanyService {
                 .limit(10)
                 .map(CompanyDto.Summary::from)
                 .collect(Collectors.toList());
+    }
+
+    // 내 업체 프로필 조회 (소유자 전용)
+    public CompanyDto.MyProfile getMyProfile(Long userId) {
+        Company company = companyRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("업체 정보를 찾을 수 없습니다."));
+        return CompanyDto.MyProfile.from(company);
+    }
+
+    // 내 업체 프로필 수정 - 업체명/사업자번호는 받지 않음 (재승인 필요 항목이라 읽기 전용)
+    @Transactional
+    public CompanyDto.MyProfile updateProfile(Long userId, CompanyDto.UpdateProfileRequest request) {
+        Company company = companyRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("업체 정보를 찾을 수 없습니다."));
+
+        company.setDescription(request.getDescription());
+        company.setProfileImage(request.getProfileImage());
+        company.setSido(request.getSido());
+        company.setSigungu(request.getSigungu());
+        company.setAddressDetail(request.getAddressDetail());
+        if (request.getLatitude() != null) company.setLatitude(BigDecimal.valueOf(request.getLatitude()));
+        if (request.getLongitude() != null) company.setLongitude(BigDecimal.valueOf(request.getLongitude()));
+        if (request.getServiceRadius() != null) company.setServiceRadius(request.getServiceRadius());
+        company.setBasePrice(request.getBasePrice());
+
+        return CompanyDto.MyProfile.from(company);
     }
 
     private List<CompanyDto.Summary> sortAndMap(List<Company> companies, String sort) {
