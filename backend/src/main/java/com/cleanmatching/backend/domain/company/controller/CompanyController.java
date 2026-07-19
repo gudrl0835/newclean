@@ -4,6 +4,7 @@ import com.cleanmatching.backend.domain.company.dto.CompanyDto;
 import com.cleanmatching.backend.domain.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,22 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
+
+    // 내 업체 프로필 조회 (수정 화면용)
+    @GetMapping("/me")
+    public ResponseEntity<CompanyDto.MyProfile> getMyProfile(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(companyService.getMyProfile(userId));
+    }
+
+    // 내 업체 프로필 수정
+    @PutMapping("/me")
+    public ResponseEntity<CompanyDto.MyProfile> updateProfile(
+            Authentication authentication,
+            @RequestBody CompanyDto.UpdateProfileRequest request) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(companyService.updateProfile(userId, request));
+    }
 
     // 홈화면 추천 업체
     @GetMapping
