@@ -10,7 +10,12 @@
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('settings.local.json: valid JSON'\\)\")",
       "Bash(java -version)",
       "Bash(./gradlew compileJava --console=plain)",
-      "Bash(./gradlew compileTestJava --console=plain)"
+      "Bash(./gradlew compileTestJava --console=plain)",
+      "Skill(fewer-permission-prompts)",
+      "Skill(fewer-permission-prompts:*)",
+      "Bash(ls -t ~/.claude/projects/*/*.jsonl 2>/dev/null | head -50 | wc -l)",
+      "Read(//c/Users/user/.claude/projects/**)",
+      "Bash(ls -lt ~/.claude/projects/*/*.jsonl 2>/dev/null)"
     ],
     "defaultMode": "acceptEdits"
   },
