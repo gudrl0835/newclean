@@ -33,7 +33,8 @@ com.cleanmatching.backend
 ├── config/
 │   ├── DataInitializer.java     ← 테스트 데이터 자동 생성
 │   ├── SecurityConfig.java
-│   └── WebSocketConfig.java
+│   ├── WebSocketConfig.java
+│   └── WebSocketAuthInterceptor.java  ← STOMP 연결 시 JWT 인증
 ├── security/
 │   ├── JwtTokenProvider.java
 │   └── JwtAuthenticationFilter.java
@@ -69,42 +70,51 @@ com.cleanmatching.backend
     │   ├── service/AdminService.java
     │   └── controller/AdminController.java
     ├── chat/
-    │   ├── entity/ChatRoom.java
-    │   └── entity/ChatMessage.java
+    │   ├── entity/ChatRoom.java       ← (customer, company) 쌍당 1개, request와 무관하게 재사용
+    │   ├── entity/ChatMessage.java
+    │   ├── repository/ChatRoomRepository.java
+    │   ├── repository/ChatMessageRepository.java
+    │   ├── dto/ChatDto.java
+    │   ├── service/ChatService.java
+    │   ├── controller/ChatController.java          ← REST (방 목록/열기/메시지 이력)
+    │   └── controller/ChatWebSocketController.java  ← STOMP 메시지 송수신
     └── support/
         ├── service/ChatbotService.java   ← OpenAI GPT 연동
         └── controller/ChatbotController.java
 ```
 
-### 프론트엔드 구조
+### 웹 구조 (web/)
 ```
 src/
 ├── api/
-│   ├── axios.js          ← baseURL: http://localhost:8080/api, JWT 인터셉터
-│   ├── auth.js           ← login, signup, refresh, logout
-│   ├── company.js        ← searchByRegion, searchNearby, getCompany
+│   ├── axios.js          ← baseURL: http://localhost:8080 (경로에 /api 직접 포함), JWT 인터셉터
+│   ├── auth.js           ← signupCustomer/Company, login, getMe, checkEmail, updateMe(닉네임만), changePassword
+│   ├── company.js        ← searchByRegion, searchNearby, getCompany, getMyProfile, updateProfile
+│   ├── chat.js           ← getChatRooms, getMessages, openRoomWithCompany
 │   ├── admin.js          ← getStats, getCompanies, approveCompany, rejectCompany, getUsers
 │   ├── request.js        ← create, getMyRequests, getCompanyRequests, sendQuotation, accept, cancel, reject, start, complete
 │   └── review.js         ← create(requestId, data)
 ├── store/
-│   └── authStore.js      ← Zustand: user, token, setAuth, logout
+│   └── authStore.js      ← Zustand: user, accessToken, refreshToken, isLoggedIn, login, logout, updateUser
 ├── pages/
 │   ├── Home.jsx
 │   ├── SearchResult.jsx  ← 실제 API 연결 완료
-│   ├── CompanyProfile.jsx ← 실제 API 연결 완료
+│   ├── CompanyProfile.jsx ← 실제 API 연결 완료, 1:1 문의 버튼이 채팅방을 실제로 개설함
 │   ├── RequestForm.jsx   ← 실제 API 연결 완료
 │   ├── ReviewForm.jsx    ← 실제 API 연결 완료
-│   ├── ChatList.jsx      ← UI만 (WebSocket 미연결)
-│   ├── ChatRoom.jsx      ← UI만 (WebSocket 미연결)
+│   ├── ChatList.jsx      ← 실제 API 연결 완료
+│   ├── ChatRoom.jsx      ← 실제 API 연결 완료 (WebSocket STOMP)
 │   ├── auth/
 │   │   ├── Login.jsx
-│   │   ├── CustomerSignup.jsx
+│   │   ├── CustomerSignup.jsx  ← 닉네임 필수 입력
 │   │   └── CompanySignup.jsx
 │   ├── customer/
-│   │   └── MyRequests.jsx  ← 실제 API 연결 완료
+│   │   ├── MyRequests.jsx    ← 실제 API 연결 완료 (QUOTED 상태에 "가격 협상하기" 채팅 버튼)
+│   │   └── ProfileEdit.jsx   ← 닉네임/비밀번호만 수정 가능 (이름·전화번호는 표시만)
 │   ├── company/
 │   │   ├── Dashboard.jsx   ← 실제 API 연결 완료
-│   │   └── QuotationForm.jsx ← 실제 API 연결 완료
+│   │   ├── QuotationForm.jsx ← 실제 API 연결 완료
+│   │   └── ProfileEdit.jsx   ← 소개/사진/활동지역/가격 등 수정, 업체명·사업자번호·대표자명·전화번호는 표시만
 │   └── admin/
 │       ├── AdminLayout.jsx
 │       ├── AdminDashboard.jsx
@@ -128,22 +138,37 @@ src/
 
 ### 인증 (AuthController)
 ```
-POST /api/auth/signup/customer   ← 고객 회원가입
-POST /api/auth/signup/company    ← 업체 회원가입
-POST /api/auth/login             ← 로그인 → AccessToken + RefreshToken
-POST /api/auth/refresh           ← 토큰 갱신
-POST /api/auth/logout            ← 로그아웃
-GET  /api/auth/me                ← 내 정보 조회
+POST  /api/auth/signup/customer   ← 고객 회원가입 (닉네임 필수)
+POST  /api/auth/signup/company    ← 업체 회원가입
+POST  /api/auth/login             ← 로그인 → AccessToken + RefreshToken
+GET   /api/auth/check-email       ← 이메일 중복 확인
+GET   /api/auth/me                ← 내 정보 조회
+PATCH /api/auth/me                ← 닉네임 수정 (이름/전화번호는 가입 후 고정, 여기서 못 바꿈)
+PATCH /api/auth/me/password       ← 비밀번호 변경 (현재 비번 확인 필요)
 ```
+> `/api/auth/refresh`, `/api/auth/logout`은 설계도상 계획됐지만 아직 구현 안 됨 (AuthController에 없음).
 
 ### 업체 (CompanyController)
 ```
-GET  /api/companies/search?sido=서울&sigungu=강남구   ← 지역 검색
-GET  /api/companies/nearby?lat=&lng=&radius=         ← 근처 검색
-GET  /api/companies/{id}                             ← 업체 상세 (리뷰 포함)
-PUT  /api/companies/profile                          ← 내 업체 프로필 수정
-POST /api/companies/profile/images                   ← 이미지 업로드
+GET  /api/companies/search?sido=서울&sigungu=강남구   ← 지역 검색 (평점순 정렬)
+GET  /api/companies/nearby?lat=&lng=&radius=         ← GPS 근처 검색
+GET  /api/companies/{id}                             ← 업체 상세 (리뷰 포함, 공개)
+GET  /api/companies/me                               ← 내 업체 프로필 조회 (소유자 전용, 인증 필요)
+PUT  /api/companies/me                                ← 내 업체 프로필 수정 (업체명/사업자번호는 응답엔 있지만 수정 불가)
 ```
+> 프로필 이미지는 아직 URL 문자열만 저장 - 실제 업로드 API는 없음.
+
+### 채팅 (ChatController + WebSocket)
+```
+GET  /api/chat/rooms                          ← 내 채팅방 목록
+GET  /api/chat/rooms/{roomId}/messages        ← 메시지 이력 조회 + 읽음 처리
+POST /api/chat/rooms/company/{companyId}      ← 업체와 채팅방 열기(없으면 생성) - 고객 전용, 견적 확정 전 가격 협상용
+
+WS    /ws                       ← SockJS 접속 엔드포인트
+STOMP /app/chat/{roomId}        ← 메시지 발송 (publish)
+STOMP /topic/chat/{roomId}      ← 메시지 수신 (subscribe)
+```
+> ChatRoom은 (customer, company) 쌍당 1개만 존재하고 여러 의뢰(request)에서 재사용된다. request와는 무관.
 
 ### 의뢰 (RequestController)
 ```
