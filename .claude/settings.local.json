@@ -7,7 +7,10 @@
       "Bash(*)",
       "PowerShell(*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('settings.local.json: valid JSON'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('settings.local.json: valid JSON'\\)\")",
+      "Bash(java -version)",
+      "Bash(./gradlew compileJava --console=plain)",
+      "Bash(./gradlew compileTestJava --console=plain)"
     ],
     "defaultMode": "acceptEdits"
   },
