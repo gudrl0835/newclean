@@ -5,12 +5,12 @@
 
 ## 기술 스택
 
-### 프론트엔드 (C:\newcelan\frontend)
+### 웹 (C:\newcelan\web)
 - React 18 + Tailwind CSS v3 + React Router v6
 - Zustand (상태관리) + Axios (HTTP)
 - 실행: `npm run dev` → http://localhost:5173
 
-### 백엔드 (C:\newcelan\backend\backend)
+### 백엔드 (C:\newcelan\backend)
 - Spring Boot 3.3.5 + Java 19 + Gradle
 - JPA/Hibernate + MySQL 8.0
 - JWT 인증 (AccessToken 30분 / RefreshToken 7일)
@@ -276,12 +276,12 @@ Data truncated for column 'role'
 
 ### 백엔드 재시작 방법
 ```powershell
-# C:\newcelan\backend\backend 에서
+# C:\newcelan\backend 에서
 .\gradlew bootRun
 ```
 
-### 프론트엔드 시작 방법
+### 웹 시작 방법
 ```powershell
-# C:\newcelan\frontend 에서
+# C:\newcelan\web 에서
 npm run dev
 ```

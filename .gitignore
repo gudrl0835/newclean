@@ -1,14 +1,18 @@
-# ===== 프론트엔드 =====
-frontend/node_modules/
-frontend/build/
-frontend/.env
-frontend/.env.local
+# ===== 웹 =====
+web/node_modules/
+web/build/
+web/.env
+web/.env.local
+
+# ===== 앱 =====
+app/node_modules/
+app/.expo/
 
 # ===== 백엔드 =====
-backend/backend/build/
-backend/backend/.gradle/
-backend/backend/out/
-backend/backend/bin/
+backend/build/
+backend/.gradle/
+backend/out/
+backend/bin/
 *.class
 *.jar
 *.war
