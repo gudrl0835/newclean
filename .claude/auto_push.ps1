@@ -1,4 +1,5 @@
-Set-Location C:\newcelan
+$root = Split-Path $PSScriptRoot -Parent
+Set-Location $root
 
 $stat = git diff HEAD --numstat 2>$null
 if (-not $stat) { exit 0 }
@@ -10,7 +11,7 @@ foreach ($line in ($stat -split "`n")) {
     if ($line -match '^(\d+)\s+(\d+)\s+(.+)$') {
         $added   = [int]$Matches[1]
         $removed = [int]$Matches[2]
-        $filepath = "C:\newcelan\" + $Matches[3].Trim()
+        $filepath = Join-Path $root $Matches[3].Trim()
 
         if (Test-Path $filepath) {
             $cur  = (Get-Content $filepath -ErrorAction SilentlyContinue | Measure-Object -Line).Lines

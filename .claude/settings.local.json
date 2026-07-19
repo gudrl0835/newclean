@@ -17,7 +17,7 @@
           {
             "type": "command",
             "shell": "powershell",
-            "command": "cd C:\\newcelan; git pull --rebase 2>&1 | Out-Null; exit 0",
+            "command": "cd \"C:\\Users\\user\\OneDrive\\바탕 화면\\project\\newcelan\"; git pull --rebase 2>&1 | Out-Null; exit 0",
             "timeout": 30,
             "statusMessage": "GitHub에서 최신 코드 가져오는 중..."
           }
@@ -31,14 +31,14 @@
           {
             "type": "command",
             "shell": "powershell",
-            "command": "$json = $input | ConvertFrom-Json; $fp = $json.tool_input.file_path; if ($fp -and ($fp -match '\\.(java|jsx|js)$')) { Add-Content -Path 'C:\\newcelan\\.claude\\changed_files.txt' -Value $fp -Force }; exit 0",
+            "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\track_changed_file.ps1\"",
             "timeout": 10,
             "statusMessage": "코드 변경 기록 중..."
           },
           {
             "type": "command",
             "shell": "powershell",
-            "command": "powershell -File C:\\newcelan\\.claude\\auto_push.ps1",
+            "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\auto_push.ps1\"",
             "timeout": 30,
             "statusMessage": "변경량 확인 중... (30% 초과 시 GitHub 자동 업로드)"
           }
@@ -50,14 +50,14 @@
         "hooks": [
           {
             "type": "agent",
-            "prompt": "Check if the file 'C:\\newcelan\\.claude\\changed_files.txt' exists and has content. If it does NOT exist or is empty, do nothing and exit immediately. If it has content: (1) Read the changed file paths. (2) Check each path - if it is a new file not listed in CLAUDE.md's file structure, add it; if an existing file was changed in a way that affects the API section (new endpoint, removed endpoint), update that section in 'C:\\newcelan\\CLAUDE.md'. (3) Delete 'C:\\newcelan\\.claude\\changed_files.txt' after updating. Keep changes minimal.",
+            "prompt": "Check if the file '.claude/changed_files.txt' (relative to the project root) exists and has content. If it does NOT exist or is empty, do nothing and exit immediately. If it has content: (1) Read the changed file paths. (2) Check each path - if it is a new file not listed in CLAUDE.md's file structure, add it; if an existing file was changed in a way that affects the API section (new endpoint, removed endpoint), update that section in 'CLAUDE.md' (project root). (3) Delete '.claude/changed_files.txt' after updating. Keep changes minimal.",
             "timeout": 120,
             "statusMessage": "설계도(CLAUDE.md) 자동 업데이트 중..."
           },
           {
             "type": "command",
             "shell": "powershell",
-            "command": "cd C:\\newcelan; $changes = git status --porcelain; if ($changes) { git add .; $msg = 'auto: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm'); git commit -m $msg; git push }; exit 0",
+            "command": "powershell -File \"$env:CLAUDE_PROJECT_DIR\\.claude\\auto_commit_push.ps1\"",
             "timeout": 30,
             "statusMessage": "GitHub에 자동 업로드 중..."
           }
