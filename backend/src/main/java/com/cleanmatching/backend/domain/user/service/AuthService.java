@@ -103,6 +103,7 @@ public class AuthService {
     }
 
     // 내 정보 수정 (이름/전화번호) - 고객/업체 공통
+    // 이름/전화번호는 가입 후 고정 - 여기선 닉네임만 바꿀 수 있다.
     public AuthDto.UserInfo updateMe(Long userId, AuthDto.UpdateMeRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -111,8 +112,6 @@ public class AuthService {
                 && (request.getNickname() == null || request.getNickname().isBlank())) {
             throw new IllegalArgumentException("닉네임을 입력해주세요.");
         }
-        user.setName(request.getName());
-        user.setPhone(request.getPhone());
         user.setNickname(request.getNickname());
         return AuthDto.UserInfo.from(user);
     }

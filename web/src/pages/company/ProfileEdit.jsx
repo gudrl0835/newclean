@@ -12,21 +12,12 @@ const APPROVAL_LABEL = {
   REJECTED: { text: '거절됨', color: 'bg-red-50 text-red-600 border-red-200' },
 };
 
-function formatPhone(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
-}
-
 export default function ProfileEdit() {
-  const { user, updateUser } = useAuthStore();
+  const { user } = useAuthStore();
 
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [form, setForm] = useState({
     description: '', profileImage: '', sido: '', sigungu: '', addressDetail: '',
     serviceRadius: '', basePrice: '',
@@ -57,33 +48,26 @@ export default function ProfileEdit() {
         setLoading(false);
       }
     })();
-    setName(user?.name || '');
-    setPhone(user?.phone || '');
-  }, [user?.name, user?.phone]);
+  }, []);
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const handleSave = async (e) => {
     e.preventDefault();
     setInfoMsg(null);
-    if (!name.trim()) return setInfoMsg({ type: 'error', text: '대표자 이름을 입력해주세요.' });
     if (!form.sido) return setInfoMsg({ type: 'error', text: '활동 지역(시/도)을 선택해주세요.' });
 
     setInfoLoading(true);
     try {
-      const [meRes, companyRes] = await Promise.all([
-        authApi.updateMe({ name, phone }),
-        companyApi.updateProfile({
-          description: form.description,
-          profileImage: form.profileImage,
-          sido: form.sido,
-          sigungu: form.sigungu,
-          addressDetail: form.addressDetail,
-          serviceRadius: form.serviceRadius ? parseInt(form.serviceRadius, 10) : null,
-          basePrice: form.basePrice ? parseInt(form.basePrice, 10) : null,
-        }),
-      ]);
-      updateUser({ name: meRes.data.name, phone: meRes.data.phone });
+      const companyRes = await companyApi.updateProfile({
+        description: form.description,
+        profileImage: form.profileImage,
+        sido: form.sido,
+        sigungu: form.sigungu,
+        addressDetail: form.addressDetail,
+        serviceRadius: form.serviceRadius ? parseInt(form.serviceRadius, 10) : null,
+        basePrice: form.basePrice ? parseInt(form.basePrice, 10) : null,
+      });
       setProfile(companyRes.data);
       setInfoMsg({ type: 'ok', text: '저장됐어요.' });
     } catch (err) {
@@ -158,12 +142,13 @@ export default function ProfileEdit() {
 
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">대표자 이름</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="input-base" />
+          <input type="text" value={user?.name || ''} disabled className="input-base bg-gray-50 text-gray-400" />
         </div>
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">전화번호</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(formatPhone(e.target.value))} placeholder="010-0000-0000" className="input-base" />
+          <input type="tel" value={user?.phone || ''} disabled className="input-base bg-gray-50 text-gray-400" />
         </div>
+        <p className="text-xs text-gray-400 -mt-2">대표자 이름·전화번호는 본인 확인 정보라 변경할 수 없어요.</p>
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">업체 소개</label>
           <textarea value={form.description} onChange={set('description')} rows={4} className="input-base resize-none" />

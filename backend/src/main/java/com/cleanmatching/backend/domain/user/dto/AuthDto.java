@@ -53,10 +53,8 @@ public class AuthDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    // 이름/전화번호는 가입 후 변경 불가(안전번호·본인확인과 연결) - 여기선 닉네임만 받는다.
     public static class UpdateMeRequest {
-        @NotBlank
-        private String name;
-        private String phone;
         // 리뷰/채팅 등에서 실명 대신 노출할 이름. 고객은 필수, 업체는 무시됨 - 이 DTO를 고객/업체가 공유해서
         // 여기선 @NotBlank를 걸지 않고 AuthService.updateMe에서 role 보고 검증한다.
         private String nickname;

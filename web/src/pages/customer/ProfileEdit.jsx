@@ -2,18 +2,9 @@ import { useState, useEffect } from 'react';
 import { authApi } from '../../api/auth';
 import useAuthStore from '../../store/authStore';
 
-function formatPhone(value) {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
-}
-
 export default function ProfileEdit() {
-  const { user, updateUser } = useAuthStore();
+  const { user } = useAuthStore();
 
-  const [name, setName] = useState(user?.name || '');
-  const [phone, setPhone] = useState(user?.phone || '');
   const [nickname, setNickname] = useState('');
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoMsg, setInfoMsg] = useState(null); // { type: 'ok'|'error', text }
@@ -29,13 +20,11 @@ export default function ProfileEdit() {
 
   const handleSaveInfo = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return setInfoMsg({ type: 'error', text: '이름을 입력해주세요.' });
     if (!nickname.trim()) return setInfoMsg({ type: 'error', text: '닉네임을 입력해주세요.' });
     setInfoMsg(null);
     setInfoLoading(true);
     try {
-      const res = await authApi.updateMe({ name, phone, nickname });
-      updateUser({ name: res.data.name, phone: res.data.phone });
+      const res = await authApi.updateMe({ nickname });
       setNickname(res.data.nickname || '');
       setInfoMsg({ type: 'ok', text: '저장됐어요.' });
     } catch (err) {
@@ -67,7 +56,7 @@ export default function ProfileEdit() {
     <div className="max-w-screen-sm mx-auto px-4 py-6 flex flex-col gap-5">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">내 정보 수정</h1>
-        <p className="text-gray-500 text-sm mt-1">이름, 전화번호, 비밀번호를 관리하세요.</p>
+        <p className="text-gray-500 text-sm mt-1">닉네임과 비밀번호를 관리하세요.</p>
       </div>
 
       {/* 기본 정보 */}
@@ -77,13 +66,19 @@ export default function ProfileEdit() {
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">이메일</label>
           <input type="email" value={user?.email || ''} disabled className="input-base bg-gray-50 text-gray-400" />
-          <p className="text-xs text-gray-400 mt-1 ml-1">이메일(아이디)은 변경할 수 없어요.</p>
         </div>
 
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">이름</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="input-base" />
+          <input type="text" value={user?.name || ''} disabled className="input-base bg-gray-50 text-gray-400" />
         </div>
+
+        <div>
+          <label className="block text-xs text-gray-500 mb-1 ml-1">전화번호</label>
+          <input type="tel" value={user?.phone || ''} disabled className="input-base bg-gray-50 text-gray-400" />
+        </div>
+
+        <p className="text-xs text-gray-400 -mt-2">이름·전화번호·이메일은 본인 확인 정보라 변경할 수 없어요.</p>
 
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">닉네임</label>
@@ -97,17 +92,6 @@ export default function ProfileEdit() {
             maxLength={30}
           />
           <p className="text-xs text-gray-400 mt-1 ml-1">리뷰와 1:1 문의에서 이름 대신 이 닉네임이 상대방에게 보여요.</p>
-        </div>
-
-        <div>
-          <label className="block text-xs text-gray-500 mb-1 ml-1">전화번호</label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
-            placeholder="010-0000-0000"
-            className="input-base"
-          />
         </div>
 
         {infoMsg && (
