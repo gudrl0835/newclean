@@ -76,6 +76,71 @@ public class CompanyDto {
         }
     }
 
+    // 업체 프로필 수정 요청 - 업체명/사업자번호는 재승인이 필요해 여기서 제외 (읽기 전용)
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProfileRequest {
+        private String description;
+        private String profileImage;
+        private String sido;
+        private String sigungu;
+        private String addressDetail;
+        private Double latitude;
+        private Double longitude;
+        private Integer serviceRadius;
+        private Integer basePrice;
+    }
+
+    // 내 업체 프로필 (수정 화면용 - 비공개 필드 포함, 소유자만 조회)
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyProfile {
+        private Long id;
+        private String companyName;
+        private String businessNo;
+        private String description;
+        private String sido;
+        private String sigungu;
+        private String addressDetail;
+        private Double latitude;
+        private Double longitude;
+        private Integer serviceRadius;
+        private Integer basePrice;
+        private String profileImage;
+        private String approvalStatus;
+        private String rejectReason;
+        private Double bayesianRating;
+        private Integer reviewCount;
+        private Double responseRate;
+        private Double completionRate;
+
+        public static MyProfile from(Company c) {
+            return MyProfile.builder()
+                    .id(c.getId())
+                    .companyName(c.getCompanyName())
+                    .businessNo(c.getBusinessNo())
+                    .description(c.getDescription())
+                    .sido(c.getSido())
+                    .sigungu(c.getSigungu())
+                    .addressDetail(c.getAddressDetail())
+                    .latitude(c.getLatitude() != null ? c.getLatitude().doubleValue() : null)
+                    .longitude(c.getLongitude() != null ? c.getLongitude().doubleValue() : null)
+                    .serviceRadius(c.getServiceRadius())
+                    .basePrice(c.getBasePrice())
+                    .profileImage(c.getProfileImage())
+                    .approvalStatus(c.getApprovalStatus().name())
+                    .rejectReason(c.getRejectReason())
+                    .bayesianRating(Math.round(c.getBayesianRating() * 10.0) / 10.0)
+                    .reviewCount(c.getReviewCount())
+                    .responseRate(c.getResponseRate())
+                    .completionRate(c.getCompletionRate())
+                    .build();
+        }
+    }
+
     @Getter
     @Builder
     @NoArgsConstructor

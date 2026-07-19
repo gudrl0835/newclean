@@ -101,6 +101,25 @@ public class AuthService {
         return AuthDto.UserInfo.from(user);
     }
 
+    // 내 정보 수정 (이름/전화번호) - 고객/업체 공통
+    public AuthDto.UserInfo updateMe(Long userId, AuthDto.UpdateMeRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        user.setName(request.getName());
+        user.setPhone(request.getPhone());
+        return AuthDto.UserInfo.from(user);
+    }
+
+    // 비밀번호 변경
+    public void changePassword(Long userId, AuthDto.ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
     @Transactional(readOnly = true)
     public boolean isEmailAvailable(String email) {
         return !userRepository.existsByEmail(email);

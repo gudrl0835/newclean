@@ -50,4 +50,23 @@ public class AuthController {
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         return ResponseEntity.ok(authService.isEmailAvailable(email));
     }
+
+    // 내 정보 수정 (이름/전화번호)
+    @PatchMapping("/me")
+    public ResponseEntity<AuthDto.UserInfo> updateMe(
+            Authentication authentication,
+            @Valid @RequestBody AuthDto.UpdateMeRequest request) {
+        Long userId = (Long) authentication.getPrincipal();
+        return ResponseEntity.ok(authService.updateMe(userId, request));
+    }
+
+    // 비밀번호 변경
+    @PatchMapping("/me/password")
+    public ResponseEntity<String> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody AuthDto.ChangePasswordRequest request) {
+        Long userId = (Long) authentication.getPrincipal();
+        authService.changePassword(userId, request);
+        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    }
 }

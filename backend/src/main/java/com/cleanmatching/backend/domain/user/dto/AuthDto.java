@@ -50,6 +50,25 @@ public class AuthDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateMeRequest {
+        @NotBlank
+        private String name;
+        private String phone;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChangePasswordRequest {
+        @NotBlank
+        private String currentPassword;
+        @NotBlank @Size(min = 8)
+        private String newPassword;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class LoginRequest {
         @NotBlank @Email
         private String email;
