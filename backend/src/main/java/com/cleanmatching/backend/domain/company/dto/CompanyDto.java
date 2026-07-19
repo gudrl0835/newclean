@@ -2,24 +2,12 @@ package com.cleanmatching.backend.domain.company.dto;
 
 import com.cleanmatching.backend.domain.company.entity.Company;
 import com.cleanmatching.backend.domain.review.entity.Review;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CompanyDto {
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateRegionRequest {
-        @NotBlank
-        private String sido;
-        @NotBlank
-        private String sigungu;
-        private String addressDetail;
-    }
 
     @Getter
     @Builder

@@ -16,12 +16,9 @@ export const authApi = {
   // 이메일 중복 확인
   checkEmail: (email) => api.get('/api/auth/check-email', { params: { email } }),
 
-  // 개인설정 조회
-  getSettings: () => api.get('/api/auth/settings'),
-
-  // 개인설정 수정 (이름/전화번호)
-  updateSettings: (data) => api.patch('/api/auth/settings', data),
+  // 내 정보 수정 (이름/전화번호/닉네임)
+  updateMe: (data) => api.patch('/api/auth/me', data),
 
   // 비밀번호 변경
-  changePassword: (data) => api.patch('/api/auth/password', data),
+  changePassword: (data) => api.patch('/api/auth/me/password', data),
 };

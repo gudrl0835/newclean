@@ -14,7 +14,7 @@ function formatPhone(value) {
 
 export default function Signup() {
   const login = useAuthStore((s) => s.login);
-  const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirm: '', phone: '' });
+  const [form, setForm] = useState({ name: '', nickname: '', email: '', password: '', passwordConfirm: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,6 +23,7 @@ export default function Signup() {
 
   const validate = () => {
     if (!form.name.trim()) return '이름을 입력해주세요.';
+    if (!form.nickname.trim()) return '닉네임을 입력해주세요.';
     if (!form.email.trim()) return '이메일을 입력해주세요.';
     if (!/^010-\d{4}-\d{4}$/.test(form.phone)) return '전화번호를 올바르게 입력해주세요. (010-0000-0000)';
     if (form.password.length < 8) return '비밀번호는 8자 이상이어야 합니다.';
@@ -40,6 +41,7 @@ export default function Signup() {
         email: form.email,
         password: form.password,
         name: form.name,
+        nickname: form.nickname,
         phone: form.phone,
       });
       const loginRes = await authApi.login({ email: form.email, password: form.password });
@@ -72,6 +74,13 @@ export default function Signup() {
         <View className="relative justify-center">
           <Feather name="user" size={18} color="#9ca3af" style={{ position: 'absolute', left: 14, zIndex: 1 }} />
           <TextInput value={form.name} onChangeText={set('name')} placeholder="이름" className="input-base pl-10" />
+        </View>
+        <View>
+          <View className="relative justify-center">
+            <Feather name="smile" size={18} color="#9ca3af" style={{ position: 'absolute', left: 14, zIndex: 1 }} />
+            <TextInput value={form.nickname} onChangeText={set('nickname')} placeholder="닉네임" className="input-base pl-10" />
+          </View>
+          <Text className="text-xs text-gray-400 mt-1 ml-1">리뷰/채팅에서 실명 대신 보여줄 이름이에요</Text>
         </View>
         <View className="relative justify-center">
           <Feather name="mail" size={18} color="#9ca3af" style={{ position: 'absolute', left: 14, zIndex: 1 }} />

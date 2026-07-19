@@ -51,8 +51,6 @@ public class SecurityConfig {
                 .requestMatchers("/ws/**").permitAll()
                 // 관리자 전용
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // 업체 전용
-                .requestMatchers(HttpMethod.PATCH, "/api/companies/region").hasRole("COMPANY")
                 // 나머지는 인증 필요
                 .anyRequest().authenticated()
             )

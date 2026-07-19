@@ -19,6 +19,11 @@ export default function Settings() {
   const [role, setRole] = useState(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [nickname, setNickname] = useState('');
+
+  // 업체 프로필은 지역 외 필드(설명/이미지/가격 등)도 있어서, 저장 시 전체를 다시 보내야
+  // 기존 값이 null로 덮어써지지 않는다 - 조회한 원본을 들고 있다가 바뀐 필드만 얹어서 PUT
+  const [companyProfile, setCompanyProfile] = useState(null);
   const [sido, setSido] = useState('');
   const [sigungu, setSigungu] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
@@ -30,15 +35,21 @@ export default function Settings() {
 
   useEffect(() => {
     authApi
-      .getSettings()
-      .then((res) => {
-        const s = res.data;
-        setRole(s.role);
-        setName(s.name || '');
-        setPhone(s.phone || '');
-        setSido(s.sido || '');
-        setSigungu(s.sigungu || '');
-        setAddressDetail(s.addressDetail || '');
+      .getMe()
+      .then(async (res) => {
+        const me = res.data;
+        setRole(me.role);
+        setName(me.name || '');
+        setPhone(me.phone || '');
+        setNickname(me.nickname || '');
+
+        if (me.role === 'COMPANY') {
+          const profileRes = await companyApi.getMyProfile();
+          setCompanyProfile(profileRes.data);
+          setSido(profileRes.data.sido || '');
+          setSigungu(profileRes.data.sigungu || '');
+          setAddressDetail(profileRes.data.addressDetail || '');
+        }
       })
       .catch(() => Alert.alert('개인설정을 불러오지 못했어요.'))
       .finally(() => setLoading(false));
@@ -46,15 +57,26 @@ export default function Settings() {
 
   const handleSave = async () => {
     if (!name.trim()) return Alert.alert('이름을 입력해주세요.');
+    if (role === 'CUSTOMER' && !nickname.trim()) return Alert.alert('닉네임을 입력해주세요.');
     setSaving(true);
     try {
-      await authApi.updateSettings({ name, phone });
-      if (role === 'COMPANY') {
+      const meRes = await authApi.updateMe({ name, phone, nickname });
+      if (role === 'COMPANY' && companyProfile) {
         if (!sido) return Alert.alert('시/도를 선택해주세요.');
         if (!sigungu.trim()) return Alert.alert('시/군/구를 입력해주세요.');
-        await companyApi.updateRegion({ sido, sigungu, addressDetail });
+        await companyApi.updateProfile({
+          description: companyProfile.description,
+          profileImage: companyProfile.profileImage,
+          serviceRadius: companyProfile.serviceRadius,
+          basePrice: companyProfile.basePrice,
+          latitude: companyProfile.latitude,
+          longitude: companyProfile.longitude,
+          sido,
+          sigungu,
+          addressDetail,
+        });
       }
-      updateUser({ name, phone });
+      updateUser({ name: meRes.data.name, phone: meRes.data.phone });
       Alert.alert('저장되었습니다.');
     } catch (err) {
       Alert.alert(err.response?.data?.message || '저장에 실패했어요.');
@@ -96,6 +118,14 @@ export default function Settings() {
 
       <Text className="text-sm font-semibold text-gray-700 mb-2">이름</Text>
       <TextInput value={name} onChangeText={setName} placeholder="이름" className="input-base mb-4" />
+
+      {role === 'CUSTOMER' && (
+        <>
+          <Text className="text-sm font-semibold text-gray-700 mb-2">닉네임</Text>
+          <Text className="text-xs text-gray-400 mb-2">리뷰/채팅에서 실명 대신 보여줄 이름이에요</Text>
+          <TextInput value={nickname} onChangeText={setNickname} placeholder="닉네임" className="input-base mb-4" />
+        </>
+      )}
 
       <Text className="text-sm font-semibold text-gray-700 mb-2">전화번호</Text>
       <TextInput
