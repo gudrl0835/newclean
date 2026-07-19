@@ -15,7 +15,18 @@
       "Skill(fewer-permission-prompts:*)",
       "Bash(ls -t ~/.claude/projects/*/*.jsonl 2>/dev/null | head -50 | wc -l)",
       "Read(//c/Users/user/.claude/projects/**)",
-      "Bash(ls -lt ~/.claude/projects/*/*.jsonl 2>/dev/null)"
+      "Bash(ls -lt ~/.claude/projects/*/*.jsonl 2>/dev/null)",
+      "Bash(taskkill //F //PID 6668 //T)",
+      "Bash(taskkill //F //PID 10580 //T)",
+      "Bash(taskkill //F //PID 9136 //T)",
+      "Bash(tasklist)",
+      "Bash(git mv *)",
+      "Bash(rmdir backend *)",
+      "Bash(./gradlew compileJava compileTestJava --console=plain)",
+      "Bash(npm start *)",
+      "Bash(git push *)",
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)"
     ],
     "defaultMode": "acceptEdits"
   },
