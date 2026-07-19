@@ -33,6 +33,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .name(request.getName())
                 .phone(request.getPhone())
+                .nickname(request.getNickname())
                 .role(User.Role.CUSTOMER)
                 .build();
 
@@ -105,8 +106,14 @@ public class AuthService {
     public AuthDto.UserInfo updateMe(Long userId, AuthDto.UpdateMeRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        // 닉네임은 고객만 필수 (리뷰/채팅에서 실명 대신 노출) - 업체에겐 의미가 없어 검증하지 않는다.
+        if (user.getRole() == User.Role.CUSTOMER
+                && (request.getNickname() == null || request.getNickname().isBlank())) {
+            throw new IllegalArgumentException("닉네임을 입력해주세요.");
+        }
         user.setName(request.getName());
         user.setPhone(request.getPhone());
+        user.setNickname(request.getNickname());
         return AuthDto.UserInfo.from(user);
     }
 

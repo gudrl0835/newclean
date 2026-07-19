@@ -32,6 +32,10 @@ public class User {
     @Column(length = 20)
     private String phone;
 
+    // 리뷰/채팅 등 상대방에게 노출될 때 쓰는 이름. 없으면 실명을 마스킹해서 대신 보여준다.
+    @Column(length = 30)
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -53,5 +57,15 @@ public class User {
 
     public enum Role {
         CUSTOMER, COMPANY, ADMIN
+    }
+
+    // 리뷰/채팅 상대방에게 보여줄 이름. 고객만 익명화 대상 - 업체는 사업자 정보라 실명 그대로 노출.
+    public String getDisplayName() {
+        if (role != Role.CUSTOMER) return name;
+        if (nickname != null && !nickname.isBlank()) return nickname;
+        if (name == null) return "익명";
+        return name.length() >= 2
+                ? name.charAt(0) + "*".repeat(name.length() - 2) + name.charAt(name.length() - 1)
+                : name;
     }
 }

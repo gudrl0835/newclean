@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { authApi } from '../../api/auth';
 import useAuthStore from '../../store/authStore';
 
@@ -14,6 +14,7 @@ export default function ProfileEdit() {
 
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
+  const [nickname, setNickname] = useState('');
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoMsg, setInfoMsg] = useState(null); // { type: 'ok'|'error', text }
 
@@ -21,14 +22,21 @@ export default function ProfileEdit() {
   const [pwLoading, setPwLoading] = useState(false);
   const [pwMsg, setPwMsg] = useState(null);
 
+  // 닉네임은 로그인 스토어에 없어서 최신 정보를 따로 조회
+  useEffect(() => {
+    authApi.getMe().then((res) => setNickname(res.data.nickname || '')).catch(() => {});
+  }, []);
+
   const handleSaveInfo = async (e) => {
     e.preventDefault();
     if (!name.trim()) return setInfoMsg({ type: 'error', text: '이름을 입력해주세요.' });
+    if (!nickname.trim()) return setInfoMsg({ type: 'error', text: '닉네임을 입력해주세요.' });
     setInfoMsg(null);
     setInfoLoading(true);
     try {
-      const res = await authApi.updateMe({ name, phone });
+      const res = await authApi.updateMe({ name, phone, nickname });
       updateUser({ name: res.data.name, phone: res.data.phone });
+      setNickname(res.data.nickname || '');
       setInfoMsg({ type: 'ok', text: '저장됐어요.' });
     } catch (err) {
       setInfoMsg({ type: 'error', text: err.response?.data?.message || '저장에 실패했어요.' });
@@ -75,6 +83,20 @@ export default function ProfileEdit() {
         <div>
           <label className="block text-xs text-gray-500 mb-1 ml-1">이름</label>
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="input-base" />
+        </div>
+
+        <div>
+          <label className="block text-xs text-gray-500 mb-1 ml-1">닉네임</label>
+          <input
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="리뷰·채팅에 표시될 이름"
+            className="input-base"
+            required
+            maxLength={30}
+          />
+          <p className="text-xs text-gray-400 mt-1 ml-1">리뷰와 1:1 문의에서 이름 대신 이 닉네임이 상대방에게 보여요.</p>
         </div>
 
         <div>

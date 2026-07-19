@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiUser, FiMail, FiLock, FiPhone } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiPhone, FiSmile } from 'react-icons/fi';
 import { authApi } from '../../api/auth';
 import useAuthStore from '../../store/authStore';
 
@@ -17,7 +17,7 @@ export default function CustomerSignup() {
   const { login } = useAuthStore();
   const from = location.state?.from || '/';
 
-  const [form, setForm] = useState({ name: '', email: '', password: '', passwordConfirm: '', phone: '' });
+  const [form, setForm] = useState({ name: '', nickname: '', email: '', password: '', passwordConfirm: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,6 +26,7 @@ export default function CustomerSignup() {
 
   const validate = () => {
     if (!form.name.trim()) return '이름을 입력해주세요.';
+    if (!form.nickname.trim()) return '닉네임을 입력해주세요.';
     if (!form.email.trim()) return '이메일을 입력해주세요.';
     if (!/^010-\d{4}-\d{4}$/.test(form.phone)) return '전화번호를 올바르게 입력해주세요. (010-0000-0000)';
     if (form.password.length < 8) return '비밀번호는 8자 이상이어야 합니다.';
@@ -45,6 +46,7 @@ export default function CustomerSignup() {
         email: form.email,
         password: form.password,
         name: form.name,
+        nickname: form.nickname,
         phone: form.phone,
       });
       const loginRes = await authApi.login({ email: form.email, password: form.password });
@@ -81,6 +83,17 @@ export default function CustomerSignup() {
               value={form.name} onChange={set('name')}
               className="input-base pl-10" required
             />
+          </div>
+          <div className="relative">
+            <FiSmile className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text" placeholder="닉네임"
+              value={form.nickname} onChange={set('nickname')}
+              className="input-base pl-10" required maxLength={30}
+            />
+            <p className="text-xs text-gray-400 mt-1 ml-1">
+              리뷰·1:1 문의에서 이름 대신 닉네임이 상대방에게 보여요
+            </p>
           </div>
           <div className="relative">
             <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={18} />

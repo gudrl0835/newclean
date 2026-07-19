@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowRight, FiMessageSquare, FiEdit } from 'react-icons/fi';
 import { requestApi } from '../../api/request';
+import { openRoomWithCompany } from '../../api/chat';
 
 const STATUS_MAP = {
   PENDING:     { label: '견적 대기중',  color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
@@ -58,6 +59,18 @@ export default function MyRequests() {
       await fetchRequests();
     } catch (err) {
       alert(err.response?.data?.message || '취소에 실패했어요.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleOpenChat = async (companyId, requestId) => {
+    setActionLoading(requestId);
+    try {
+      const res = await openRoomWithCompany(companyId);
+      navigate(`/chat/${res.data.id}`);
+    } catch {
+      alert('채팅을 여는 데 실패했어요.');
     } finally {
       setActionLoading(null);
     }
@@ -163,13 +176,23 @@ export default function MyRequests() {
                     <p className="text-sm font-semibold text-purple-800 mb-2">
                       견적이 도착했어요! {req.quotationPrice?.toLocaleString()}원
                     </p>
-                    <button
-                      onClick={() => handleAccept(req.id)}
-                      disabled={isActioning}
-                      className="w-full bg-purple-600 text-white font-semibold py-2.5 rounded-xl hover:bg-purple-700 transition-colors text-sm disabled:opacity-60"
-                    >
-                      {isActioning ? '처리 중...' : '✅ 견적 수락하기'}
-                    </button>
+                    <p className="text-xs text-purple-600 mb-2">가격이 맞지 않으면 수락 전에 채팅으로 먼저 협상해보세요.</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleOpenChat(req.companyId, req.id)}
+                        disabled={isActioning}
+                        className="flex-1 bg-white border border-purple-300 text-purple-700 font-semibold py-2.5 rounded-xl hover:bg-purple-100 transition-colors text-sm disabled:opacity-60"
+                      >
+                        💬 가격 협상하기
+                      </button>
+                      <button
+                        onClick={() => handleAccept(req.id)}
+                        disabled={isActioning}
+                        className="flex-1 bg-purple-600 text-white font-semibold py-2.5 rounded-xl hover:bg-purple-700 transition-colors text-sm disabled:opacity-60"
+                      >
+                        {isActioning ? '처리 중...' : '✅ 견적 수락하기'}
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -201,11 +224,12 @@ export default function MyRequests() {
                     </button>
                   )}
 
-                  {/* 채팅 버튼 (취소 제외 모두) */}
-                  {req.status !== 'CANCELLED' && (
+                  {/* 채팅 버튼 (취소 제외 모두, QUOTED는 위 협상 박스에 이미 있어 생략) */}
+                  {req.status !== 'CANCELLED' && req.status !== 'QUOTED' && (
                     <button
-                      onClick={() => navigate('/chats')}
-                      className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 text-gray-500 text-sm py-2 rounded-xl hover:border-brand hover:text-brand transition-colors"
+                      onClick={() => handleOpenChat(req.companyId, req.id)}
+                      disabled={isActioning}
+                      className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 text-gray-500 text-sm py-2 rounded-xl hover:border-brand hover:text-brand transition-colors disabled:opacity-60"
                     >
                       <FiMessageSquare size={14} />
                       업체에 문의

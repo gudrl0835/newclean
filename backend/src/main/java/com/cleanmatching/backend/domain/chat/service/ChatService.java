@@ -41,6 +41,20 @@ public class ChatService {
                 ));
     }
 
+    /* 업체와의 채팅방 열기 (없으면 생성) - 고객이 견적 확정 전 가격 협상 등을 위해 먼저 문의할 때 사용 */
+    @Transactional
+    public ChatDto.RoomResponse openRoomAsCustomer(Long customerId, Long companyId) {
+        User customer = userRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        if (customer.getRole() != User.Role.CUSTOMER)
+            throw new IllegalArgumentException("고객만 1:1 문의를 시작할 수 있습니다.");
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("업체를 찾을 수 없습니다."));
+
+        ChatRoom room = getOrCreateRoom(customer, company);
+        return ChatDto.RoomResponse.from(room, customerId);
+    }
+
     /* 내 채팅방 목록 */
     public List<ChatDto.RoomResponse> getMyRooms(Long userId) {
         User user = userRepository.findById(userId)

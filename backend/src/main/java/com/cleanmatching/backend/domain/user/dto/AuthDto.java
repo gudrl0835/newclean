@@ -22,6 +22,9 @@ public class AuthDto {
         @NotBlank
         private String name;
         private String phone;
+        // 리뷰/채팅에서 실명 대신 보여줄 이름 - 필수
+        @NotBlank
+        private String nickname;
     }
 
     @Getter
@@ -54,6 +57,9 @@ public class AuthDto {
         @NotBlank
         private String name;
         private String phone;
+        // 리뷰/채팅 등에서 실명 대신 노출할 이름. 고객은 필수, 업체는 무시됨 - 이 DTO를 고객/업체가 공유해서
+        // 여기선 @NotBlank를 걸지 않고 AuthService.updateMe에서 role 보고 검증한다.
+        private String nickname;
     }
 
     @Getter
@@ -98,6 +104,7 @@ public class AuthDto {
         private String email;
         private String name;
         private String phone;
+        private String nickname;
         private String role;
 
         public static UserInfo from(User user) {
@@ -106,6 +113,7 @@ public class AuthDto {
                     .email(user.getEmail())
                     .name(user.getName())
                     .phone(user.getPhone())
+                    .nickname(user.getNickname())
                     .role(user.getRole().name())
                     .build();
         }

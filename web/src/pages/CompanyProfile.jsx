@@ -6,6 +6,7 @@ import StarRating from '../components/common/StarRating';
 import LoginPromptModal from '../components/common/LoginPromptModal';
 import useAuthStore from '../store/authStore';
 import { companyApi } from '../api/company';
+import { openRoomWithCompany } from '../api/chat';
 
 export default function CompanyProfile() {
   const { id } = useParams();
@@ -38,12 +39,26 @@ export default function CompanyProfile() {
     navigate(`/request/${id}`);
   };
 
-  const handleChat = () => {
+  const [chatLoading, setChatLoading] = useState(false);
+
+  const handleChat = async () => {
     if (!isLoggedIn) {
       setLoginModal('chat');
       return;
     }
-    navigate(`/chats`);
+    if (user?.role?.toLowerCase() !== 'customer') {
+      alert('1:1 문의는 고객 계정으로만 가능합니다.');
+      return;
+    }
+    setChatLoading(true);
+    try {
+      const res = await openRoomWithCompany(id);
+      navigate(`/chat/${res.data.id}`);
+    } catch {
+      alert('채팅을 여는 데 실패했어요.');
+    } finally {
+      setChatLoading(false);
+    }
   };
 
   /* 로딩 */
@@ -268,10 +283,11 @@ export default function CompanyProfile() {
         <div className="max-w-screen-md mx-auto flex gap-3">
           <button
             onClick={handleChat}
-            className="flex items-center justify-center gap-2 border-2 border-brand text-brand font-semibold py-3 px-5 rounded-xl hover:bg-blue-50 transition-colors flex-1"
+            disabled={chatLoading}
+            className="flex items-center justify-center gap-2 border-2 border-brand text-brand font-semibold py-3 px-5 rounded-xl hover:bg-blue-50 transition-colors flex-1 disabled:opacity-60"
           >
             <FiMessageSquare size={18} />
-            1:1 문의
+            {chatLoading ? '여는 중...' : '1:1 문의'}
           </button>
           <button
             onClick={handleRequest}

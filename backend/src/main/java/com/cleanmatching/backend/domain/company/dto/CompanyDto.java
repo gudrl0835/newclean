@@ -23,14 +23,9 @@ public class CompanyDto {
         private String date;
 
         public static ReviewItem from(Review r) {
-            String name = r.getCustomer().getName();
-            // 이름 마스킹: 홍길동 → 홍*동
-            String masked = name.length() >= 2
-                    ? name.charAt(0) + "*".repeat(name.length() - 2) + name.charAt(name.length() - 1)
-                    : name;
             return ReviewItem.builder()
                     .id(r.getId())
-                    .customerName(masked)
+                    .customerName(r.getCustomer().getDisplayName())
                     .score(r.getScore())
                     .content(r.getContent())
                     .beforeImage(r.getBeforeImage())

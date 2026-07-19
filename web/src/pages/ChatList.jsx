@@ -45,7 +45,7 @@ export default function ChatList() {
         <div className="text-center py-20 text-gray-400">
           <p className="text-4xl mb-4">💬</p>
           <p>채팅방이 없어요.</p>
-          <p className="text-sm mt-1">견적을 수락하면 채팅이 시작돼요!</p>
+          <p className="text-sm mt-1">업체 프로필이나 내 의뢰에서 "1:1 문의"로 채팅을 시작해보세요!</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">

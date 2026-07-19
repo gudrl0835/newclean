@@ -54,9 +54,9 @@ public class DataInitializer implements ApplicationRunner {
     // 테스트 고객 계정 3개
     private void createTestCustomer() {
         List<CustomerData> customers = List.of(
-            new CustomerData("customer1@test.com", "홍길동", "010-9999-8888"),
-            new CustomerData("customer2@test.com", "김철수", "010-8888-7777"),
-            new CustomerData("customer3@test.com", "이영희", "010-7777-6666")
+            new CustomerData("customer1@test.com", "홍길동", "010-9999-8888", "청소요정"),
+            new CustomerData("customer2@test.com", "김철수", "010-8888-7777", "철수"),
+            new CustomerData("customer3@test.com", "이영희", "010-7777-6666", "영희")
         );
 
         for (CustomerData data : customers) {
@@ -67,6 +67,7 @@ public class DataInitializer implements ApplicationRunner {
                     .password(passwordEncoder.encode("Test1234!"))
                     .name(data.name)
                     .phone(data.phone)
+                    .nickname(data.nickname)
                     .role(User.Role.CUSTOMER)
                     .emailVerified(true)
                     .build();
@@ -162,5 +163,5 @@ public class DataInitializer implements ApplicationRunner {
         double lat, double lng, String businessNo
     ) {}
 
-    record CustomerData(String email, String name, String phone) {}
+    record CustomerData(String email, String name, String phone, String nickname) {}
 }
