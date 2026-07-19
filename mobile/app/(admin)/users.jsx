@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { adminApi } from '../../src/api/admin';
 
 const ROLE_BADGE = {
@@ -10,6 +11,7 @@ const ROLE_BADGE = {
 const ROLE_LABEL = { CUSTOMER: '고객', COMPANY: '업체', ADMIN: '관리자' };
 
 export default function AdminUsers() {
+  const insets = useSafeAreaInsets();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -39,7 +41,7 @@ export default function AdminUsers() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 px-4 pt-4">
+    <View className="flex-1 bg-gray-50 px-4" style={{ paddingTop: insets.top + 16 }}>
       <Text className="text-2xl font-bold text-gray-900 mb-1">회원 관리</Text>
       <Text className="text-gray-500 text-sm mb-4">전체 가입 회원을 관리합니다</Text>
 

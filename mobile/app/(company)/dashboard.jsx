@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { requestApi } from '../../src/api/request';
@@ -33,6 +34,7 @@ const STATUS_TEXT_COLOR = {
 const FILTERS = ['ALL', 'PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED'];
 
 export default function Dashboard() {
+  const insets = useSafeAreaInsets();
   const user = useAuthStore((s) => s.user);
   const [activeTab, setActiveTab] = useState('requests');
   const [filter, setFilter] = useState('ALL');
@@ -85,7 +87,7 @@ export default function Dashboard() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: insets.top + 16, paddingBottom: 40 }}>
       <View className="mb-6">
         <Text className="text-2xl font-bold text-gray-900">업체 대시보드</Text>
         <Text className="text-gray-500 text-sm mt-1">{user?.name || ''} 님 반갑습니다</Text>

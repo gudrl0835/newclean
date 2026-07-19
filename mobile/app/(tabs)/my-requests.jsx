@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator, Alert, Linking } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { requestApi } from '../../src/api/request';
@@ -16,6 +17,7 @@ const STATUS_MAP = {
 const FILTERS = ['ALL', 'PENDING', 'QUOTED', 'ACCEPTED', 'COMPLETED'];
 
 export default function MyRequests() {
+  const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState('ALL');
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ export default function MyRequests() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16, paddingTop: insets.top + 16, paddingBottom: 40 }}>
       <Text className="text-2xl font-bold text-gray-900 mb-5">내 의뢰 현황</Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-5">

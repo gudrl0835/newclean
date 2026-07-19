@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView, TextInput, ActivityIndicator, Alert, Modal, Linking } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { adminApi } from '../../src/api/admin';
 
@@ -17,6 +18,7 @@ const STATUS_BADGE = {
 };
 
 export default function AdminCompanies() {
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams();
   const [status, setStatus] = useState(params.status || 'ALL');
   const [companies, setCompanies] = useState([]);
@@ -64,7 +66,7 @@ export default function AdminCompanies() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: insets.top + 16, paddingBottom: 40 }}>
         <Text className="text-2xl font-bold text-gray-900 mb-1">업체 승인 관리</Text>
         <Text className="text-gray-500 text-sm mb-4">가입 신청한 업체를 검토하고 승인/거절하세요</Text>
 

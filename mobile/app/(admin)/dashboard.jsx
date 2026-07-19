@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { adminApi } from '../../src/api/admin';
 
@@ -18,6 +19,7 @@ function StatCard({ label, value, borderColor, onPress, wide }) {
 }
 
 export default function AdminDashboard() {
+  const insets = useSafeAreaInsets();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{ padding: 16, paddingTop: insets.top + 16, paddingBottom: 40 }}>
       <View className="mb-6">
         <Text className="text-2xl font-bold text-gray-900">대시보드</Text>
         <Text className="text-gray-500 text-sm mt-1">클린매칭 서비스 현황</Text>

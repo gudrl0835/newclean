@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import useAuthStore from '../store/authStore';
@@ -6,6 +7,7 @@ import useAuthStore from '../store/authStore';
 const ROLE_LABEL = { CUSTOMER: '고객', COMPANY: '업체', ADMIN: '관리자' };
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
@@ -14,7 +16,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 px-4 py-6">
+    <View className="flex-1 bg-gray-50 px-4 pb-6" style={{ paddingTop: insets.top + 24 }}>
       <View className="card flex-row items-center gap-4 mb-6">
         <View className="w-14 h-14 rounded-full bg-blue-100 items-center justify-center">
           <Text className="text-2xl font-bold text-blue-500">{user?.name?.[0] || '?'}</Text>
