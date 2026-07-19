@@ -24,7 +24,9 @@
       "Bash(rmdir backend *)",
       "Bash(./gradlew compileJava compileTestJava --console=plain)",
       "Bash(npm start *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)"
     ],
     "defaultMode": "acceptEdits"
   },
