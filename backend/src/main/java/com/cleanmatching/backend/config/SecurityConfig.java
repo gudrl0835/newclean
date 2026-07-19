@@ -41,7 +41,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // 인증 없이 접근 가능
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/signup/**", "/api/auth/login", "/api/auth/check-email").permitAll()
                 .requestMatchers("/api/chatbot/**").permitAll()
                 // 내 업체 프로필은 소유자 인증이 필요 - 아래 공개 GET 규칙보다 먼저 매칭되어야 함
                 .requestMatchers("/api/companies/me").authenticated()
